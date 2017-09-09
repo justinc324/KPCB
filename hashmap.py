@@ -15,7 +15,7 @@ class HashMap:
         # If the index is empty, drop it in. Else, check to see if the key exists in the current bucket
         # if it exists, update value; else, append it
         if self.check_hashmap(key):
-            self.map[bucket] = list([bucket])
+            self.map[bucket] = list([key_value_pair])
             self.items += 1
             return True
         else:
@@ -39,27 +39,30 @@ class HashMap:
             for pair in self.map[bucket]:
                 if pair[0] == key:
                     return pair[1]
-                else:
-                    return None
+            return None
 
     def delete(self, key):
-        bucket = self.get_hash()
+        bucket = self.get_hash(key)
 
         # if key's bucket is empty, return None. Else check the bucket for the key - if there delete the value and
         # return it. Else return None
         if self.check_hashmap(key):
             return None
         else:
+            # probe through pairs in bucket, pop off bucket if it has corresponding key
+            i = 0
             for pair in self.map[bucket]:
                 if pair[0] == key:
                     deleted_item = pair[1]
-                    del pair[0]
-                    del pair[1]
-                    if self.map[bucket] is None:
+                    self.map[bucket].pop(i)
+                    if len(self.map[bucket]) > 1:
+                        for i in self.map[bucket]:
+                            if len(self.map[bucket][i]) > 0 is False:
+                                self.items -= 1
+                    else:
                         self.items -= 1
                     return deleted_item
-                else:
-                    return None
+                i += 1
             return None
 
     # returns the load factor on the hash map
